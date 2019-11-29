@@ -1,6 +1,5 @@
 .board {
-    display: flex;
-    flex-direction: row;
+
 }
 .columns {
     display: flex;
@@ -9,4 +8,20 @@
 .column {
     display: flex;
     flex-direction: column;
+}
+.free-places {
+    display: inline-flex;
+}
+.free-place {
+    width: 130px;
+    height: 200px;
+    border: 1px solid black;
+}
+.collectedCards {
+    display: inline-flex;
+}
+.collectedStack {
+    width: 130px;
+    height: 200px;
+    border: 1px solid black;
 }
