@@ -48,7 +48,7 @@ export class Board {
         return this.selectedCard &&
             this.selectedCard.position.stack === 'columns' &&
             this.columns[this.selectedCard.position.x]
-            || [];
+            || null;
     }
     @computed
     get canPlaceColumns() {
@@ -61,7 +61,7 @@ export class Board {
             if (selectedCard.position.stack === 'freeplace' || selectedCard.position.stack === 'foundation') {
                 return lt(selectedCard, lastCard);
             } else {
-                const selectedColumn = this.selectedColumn;
+                const selectedColumn = this.selectedColumn!;
                 const stack = movableStack(selectedColumn, lastCard);
                 return !!stack.length;
             }

@@ -4,6 +4,7 @@ import { Card, suits } from '../state/card';
 import React from 'react';
 import { game, movableStack } from '../state';
 import {observer} from'mobx-react';
+import { last } from 'lodash';
 
 const cardsMap = (c: Card, i: number) => (
     <CardComponent onSelect={game.board.selectCard} key={c.id} card={c} />
@@ -35,29 +36,35 @@ export const BoardComponent = observer(() => {
 const Column = observer(({index}: {index: number}) => {
     const column = game.board.columns[index];
     const cardsUnder = column.slice(0, -1);
-    const lastCard = column[column.length-1];
+    const lastCard = last(column) || null;
     const selectedCard = game.board.selectedCard;
     const canPlace = game.board.canPlaceColumns[index];
     const canPlaceCls = canPlace ? 'can-place' : '';
-    return <div className={`column ${canPlaceCls}`}>
+    return <div className={`column ${canPlaceCls}`} onClick={onClick}>
         {cardsUnder.map(c => <CardComponent key={c.id} card={c} />)}
-        <CardComponent key={lastCard.id} card={lastCard} onSelect={onSelect} />
+        {!!lastCard && <CardComponent key={lastCard.id} card={lastCard} />}
     </div>
 
-    function onSelect(card: Card) {
+    function onClick() {
         if (canPlace) {
             const selectedCard = game.board.selectedCard!;
-            const stack = movableStack(game.board.selectedColumn, lastCard);
-            stack.forEach((movingCard, i) => {
+            const selectedColumn = game.board.selectedColumn;
+            let toMove = [] as Card[];
+            if (selectedColumn) {
+                toMove = movableStack(selectedColumn, lastCard);
+            } else {
+                toMove = [selectedCard];
+            }
+            toMove.forEach((movingCard, i) => {
                 movingCard.position = {
                     stack: 'columns',
                     x: index,
-                    y: lastCard.position.y + 1 + i
+                    y: (lastCard ? lastCard.position.y + 1 + i : 0)
                 }
             })
             selectedCard.selected = false;
-        } else {
-            game.board.selectCard(card);
+        } else if (lastCard) {
+            game.board.selectCard(lastCard);
         }
     }
 })
