@@ -5,10 +5,11 @@ import React from 'react';
 import { game } from '../state';
 import {observer} from'mobx-react';
 
+const cardsMap = (c: Card, i: number) => (
+    <CardComponent onSelect={game.board.selectCard} key={c.id} card={c} />
+)
+
 export const BoardComponent = observer(() => {
-    const cardsMap = (c: Card, i: number) => (
-        <CardComponent onSelect={board.selectCard} key={c.id} card={c} />
-    )
     const board = game.board;
     return <div className="board">
         <div className="free-places">
@@ -21,19 +22,24 @@ export const BoardComponent = observer(() => {
         <div className="collectedCards">
             {suits.map(suit => (
                 <div key={suit} className="collectedStack">
-                    {board.collectedCards[suit].map(cardsMap)}
+                    {board.foundation[suit].map(cardsMap)}
                 </div>
             ))}
         </div>
         <div className="columns">
-            {board.columns.map((column, i) => {
-                return <div key={i} className="column">
-                        {column.map(cardsMap)}
-                    </div>
-            })}
+            {board.columns.map((c, i) => <Column column={c} key={i}/>)}
         </div>
     </div>
-})
+});
+
+const Column = ({column}: {column: Card[]}) => {
+    const cardsUnder = column.slice(0, -1);
+    const lastCard = column[column.length -1 ];
+    return <div className="column">
+        {cardsUnder.map(c => <CardComponent key={c.id} card={c} />)}
+        <CardComponent key={lastCard.id} card={lastCard} onSelect={game.board.selectCard} />
+    </div>
+}
 const FreePlace = ({i}: {i: number}) => {
     const board = game.board;
     const place = board.freeplaces[i];

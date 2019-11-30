@@ -3,7 +3,7 @@ import './card.css';
 import { Card, Rank, Suit } from '../state/card';
 import { observer } from 'mobx-react';
 
-export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect: (card: Card) => void}) => {
+export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect?: (card: Card) => void}) => {
     const [zIndex, setZIndex] = useState<string>('');
     const style = zIndex ? {zIndex} : {} as any;
     const selected = card.selected ? 'card-selected' : '';
@@ -30,7 +30,7 @@ export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect: 
             setZIndex('55');
             document.body.addEventListener('mouseup', onMouseUp)
         } else if (e.button === 0) {
-            onSelect(card)
+            onSelect && onSelect(card)
         }
     }
     function onMouseUp(e: MouseEvent) {

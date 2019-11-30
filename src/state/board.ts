@@ -1,7 +1,12 @@
-import {Card, createCard} from './card';
+import {Card, createCard, suits} from './card';
 import {observable, computed} from 'mobx';
 
 export class Board {
+    @observable
+    setNumber: number;
+    @observable
+    allCards: Card[] = [];
+
     @computed
     get freeplaces() {
         const cards = this.allCards.filter(c => c.position.stack === 'freeplace')
@@ -22,13 +27,16 @@ export class Board {
         })
     }
 
-    @observable
-    collectedCards: {[i: string]: Card[]} = {spades: [], diamonds: [], clubs: [], hearts: []}
+    @computed
+    get foundation(): {[i: string]: Card[]} {
+        return suits.reduce((cards: any, suit) => {
+            cards[suit] = this.allCards.filter(c => {
+                return c.position.stack === 'foundation' && c.suit === suit;
+            }) as Card[];
+            return cards;
+        }, {})
+    }
 
-    @observable
-    setNumber: number;
-    @observable
-    allCards: Card[] = [];
     @computed
     get selectedCard() {
         return this.allCards.find(c => c.selected) || null;
@@ -55,11 +63,17 @@ export class Board {
     }
 
     selectCard(card: Card) {
-        this.allCards.forEach(c => c.selected = false);
-        card.selected = true;
+        if (this.selectedCard === card) {
+            card.selected = false;
+        } else if (this.selectedCard != null) {
+            this.selectedCard.selected = false;
+            card.selected = true;
+        } else {
+            card.selected = true;
+        }
+
     }
     freePlaceClick(i: number) {
-        console.log(i, this.selectedCard, this.freeplaces[i])
         if (this.selectedCard && this.freeplaces[i] === null) {
             this.selectedCard.position = {
                 stack: 'freeplace',
