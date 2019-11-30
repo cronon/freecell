@@ -14,6 +14,7 @@ export const CardComponent = observer(({card, onSelect, onDoubleClick}: CardComp
     const style = zIndex ? {zIndex} : {} as any;
     const selected = card.selected ? 'card-selected' : '';
     return <div style={style} className={`card card-${suitToColor(card.suit)} ${selected}`}
+            onClick={() => onSelect && onSelect(card)}
             onMouseDown={onMouseDown} onContextMenu={e => e.preventDefault()} onDoubleClick={onDoubleClick}
             >
             <div className="card-header">
@@ -35,8 +36,6 @@ export const CardComponent = observer(({card, onSelect, onDoubleClick}: CardComp
             e.stopPropagation();
             setZIndex('55');
             document.body.addEventListener('mouseup', onMouseUp)
-        } else if (e.button === 0) {
-            onSelect && onSelect(card)
         }
     }
     function onMouseUp(e: MouseEvent) {

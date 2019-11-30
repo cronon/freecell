@@ -1,4 +1,4 @@
-import {observable, computed} from 'mobx';
+import {observable, computed, intercept} from 'mobx';
 import {Card, createCard, suits, lt, Suit} from './card';
 import {movableStack} from './column';
 import { last } from 'lodash';
@@ -84,6 +84,7 @@ export class Board {
                     })
                 }));
                 this.allCards.push(card);
+                // intercept(card, function(change){ console.log(change); return change })
             });
         });
         this.selectCard = this.selectCard.bind(this);

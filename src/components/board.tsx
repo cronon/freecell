@@ -2,13 +2,9 @@ import './board.scss';
 import {CardComponent} from './card';
 import { Card, suits, Suit } from '../state/card';
 import React from 'react';
-import { game, movableStack } from '../state';
+import { game} from '../state';
 import {observer} from'mobx-react';
 import { last } from 'lodash';
-
-const cardsMap = (c: Card, i: number) => (
-    <CardComponent onSelect={game.board.selectCard} key={c.id} card={c} />
-)
 
 export const BoardComponent = observer(() => {
     const board = game.board;
@@ -45,9 +41,7 @@ const Column = observer(({index}: {index: number}) => {
     </div>
 
     function onClick() {
-        if (canPlace) {
-            board.moveToColumn(index);
-        }
+        canPlace && board.moveToColumn(index);
     }
 });
 const Foundation = observer(({suit}: {suit: Suit}) => {
