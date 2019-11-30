@@ -1,5 +1,6 @@
 import {observable, computed, intercept} from 'mobx';
 import {Card, createCard, suits, lt, Suit} from './card';
+import {Foundation, canPlaceFoundation, canAutoMoveFoundation} from './foundation';
 import {movableStack} from './column';
 import { last } from 'lodash';
 
@@ -32,7 +33,7 @@ export class Board {
     }
 
     @computed
-    get foundation(): {[i: string]: Card[]} {
+    get foundation(): Foundation {
         return suits.reduce((cards: any, suit) => {
             cards[suit] = this.allCards.filter(c => {
                 return c.position.stack === 'foundation' && c.suit === suit;
@@ -72,15 +73,12 @@ export class Board {
         return r;
     }
     @computed
-    get canPlaceFoundation(): {[i: string]: Card[]} {
+    get canPlaceFoundation(): {[i in Suit]: boolean} {
         const selectedCard = this.selectedCard;
         return suits.reduce((suits, suit) => {
             suits[suit] = false;
-            if (selectedCard && selectedCard.suit === suit) {
-                const lastCard = last(this.foundation[suit]);
-                suits[suit] = lastCard
-                    ? lastCard.rank + 1 === selectedCard.rank
-                    : selectedCard.rank === 1;
+            if (selectedCard) {
+                suits[suit] = canPlaceFoundation(selectedCard, this.foundation) && selectedCard.suit === suit
             }
             return suits;
         }, {} as any)
@@ -103,9 +101,23 @@ export class Board {
                 // intercept(card, function(change){ console.log(change); return change })
             });
         });
-        this.commitState();
+        this.finishMove();
         this.selectCard = this.selectCard.bind(this);
         this.moveToFreePlace = this.moveToFreePlace.bind(this);
+    }
+    finishMove(){
+        this.commitState();
+        const autoMoveCards = this.columns.map(col => last(col))
+            .concat(...this.freeplaces as any)
+            .filter(c => !!c)
+            .filter((c: any) => canAutoMoveFoundation(c, this.foundation)) as Card[];
+        console.log(autoMoveCards);
+        if (autoMoveCards.length) {
+            setTimeout(() => {
+                autoMoveCards.forEach(c => this._moveToFoundation(c));
+                this.finishMove();
+            }, 300)
+        }
     }
     commitState(){
         this.turns.push(this.allCards.map((card: any) => ({
@@ -136,7 +148,7 @@ export class Board {
                 x: i, y: 0
             }
             this.selectedCard.selected = false;
-            this.commitState();
+            this.finishMove();
         }
     }
     tryToMove(card: Card) {
@@ -172,20 +184,23 @@ export class Board {
             }
         })
         selectedCard.selected = false;
-        this.commitState();
+        this.finishMove();
+    }
+    _moveToFoundation(card: Card) {
+        if (canPlaceFoundation(card, this.foundation)) {
+            card.position = {
+                stack: 'foundation',
+                y: 0,
+                x: 0
+            }
+        }
     }
     moveToFoundation(suit: Suit) {
         const selectedCard = this.selectedCard;
         if (selectedCard && selectedCard.suit === suit && selectedCard.position.stack !== 'foundation') {
-            if (this.canPlaceFoundation[suit]) {
-                selectedCard.position = {
-                    stack: 'foundation',
-                    y: 0,
-                    x: 0
-                }
-                selectedCard.selected = false;
-                this.commitState();
-            }
+            this._moveToFoundation(selectedCard);
+            selectedCard.selected = false;
+            this.finishMove();
         }
     }
 }
