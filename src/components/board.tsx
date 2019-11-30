@@ -1,8 +1,8 @@
 import './board.scss';
 import {CardComponent} from './card';
-import { Card, suits, Suit } from '../state/card';
+import { suits, Suit, suitToPic, suitToColor } from '../state/card';
 import React from 'react';
-import { game} from '../state';
+import { game } from '../state';
 import {observer} from'mobx-react';
 import { last } from 'lodash';
 
@@ -15,7 +15,7 @@ export const BoardComponent = observer(() => {
             <FreePlace key={2} i={2} />
             <FreePlace key={3} i={3} />
         </div>
-        <div className="collectedCards">
+        <div className="foundation-row">
             {suits.map(suit => (
                 <Foundation suit={suit} key={suit} />
             ))}
@@ -48,9 +48,14 @@ const Foundation = observer(({suit}: {suit: Suit}) => {
     const board = game.board;
     const cards = board.foundation[suit];
     const lastCard = last(cards);
-    return <div className="collectedStack" onClick={() => board.moveToFoundation(suit)}>
-        {lastCard && <CardComponent card={lastCard} onSelect={game.board.selectCard}
-            onDoubleClick={() => board.tryToMove(lastCard)}/> }
+    return <div className="foundation" onClick={() => board.moveToFoundation(suit)}>
+        {lastCard
+            ? <CardComponent card={lastCard} onSelect={game.board.selectCard}
+                onDoubleClick={() => board.tryToMove(lastCard)}/>
+            : <div className={`foundation-empty foundation-empty-${suitToColor(suit)}`}>
+                {suitToPic(suit)}
+            </div>
+        }
     </div>
 })
 const FreePlace = observer(({i}: {i: number}) => {

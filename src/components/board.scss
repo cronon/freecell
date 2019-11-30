@@ -47,19 +47,34 @@
         left: -1px;
     }
 }
-.collectedCards {
-    display: inline-flex;
+.foundation-row {
+    display: flex;
 }
-.collectedStack {
+.foundation {
     width: var(--card-width);
     height: var(--card-height);
     box-sizing: border-box;
     margin-right: 1px;
     border: 1px solid black;
     background: forestgreen;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    user-select: none;
+
     .card {
         position: relative;
         top: -1px;
         left: -1px;
+    }
+    .foundation-empty {
+        font-size: 72px;
+    }
+    .foundation-empty-black {
+        color: black;
+    }
+    .foundation-empty-red {
+        color: red;
     }
 }

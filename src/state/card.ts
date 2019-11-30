@@ -46,3 +46,13 @@ export function suitToColor(suit: Suit): string {
         default: throw new Error('Unrecognized suit')
     }
 }
+
+export function suitToPic(suit: Suit): string {
+    switch(suit) {
+        case 'clubs': return '♣';
+        case 'diamonds': return '♦';
+        case 'hearts': return '♥';
+        case 'spades': return '♠';
+        default: throw new Error('Unrecognized suit')
+    }
+}

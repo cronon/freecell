@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './card.css';
-import { Card, Rank, Suit, suitToColor } from '../state/card';
+import { Card, Rank, Suit, suitToColor, suitToPic } from '../state/card';
 import { observer } from 'mobx-react';
 import {game} from '../state';
 
@@ -61,13 +61,5 @@ function rankToLetter(number: Rank): string {
         ][number - 1]
     }
 }
-function suitToPic(suit: Suit): string {
-    switch(suit) {
-        case 'clubs': return '♣';
-        case 'diamonds': return '♦';
-        case 'hearts': return '♥';
-        case 'spades': return '♠';
-        default: throw new Error('Unrecognized suit')
-    }
-}
+
 
