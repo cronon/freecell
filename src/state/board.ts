@@ -108,4 +108,15 @@ export class Board {
             this.selectedCard.selected = false;
         }
     }
+    moveToFreePlace(card: Card) {
+        const freeIndex = this.freeplaces.findIndex(f => f === null);
+        if (freeIndex !== -1) {
+            card.position = {
+                stack: 'freeplace',
+                y: 0,
+                x: freeIndex
+            }
+        }
+
+    }
 }

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import './card.css';
 import { Card, Rank, Suit, suitToColor } from '../state/card';
 import { observer } from 'mobx-react';
+import {game} from '../state';
 
 export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect?: (card: Card) => void}) => {
     const [zIndex, setZIndex] = useState<string>('');
     const style = zIndex ? {zIndex} : {} as any;
     const selected = card.selected ? 'card-selected' : '';
     return <div style={style} className={`card card-${suitToColor(card.suit)} ${selected}`}
+            onDoubleClick={onDoubleClick}
             onMouseDown={onMouseDown} onContextMenu={e => e.preventDefault()}
             >
             <div className="card-header">
@@ -38,6 +40,9 @@ export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect?:
             setZIndex('');
             document.body.removeEventListener('mouseup', onMouseUp);
         }
+    }
+    function onDoubleClick() {
+        game.board.moveToFreePlace(card);
     }
 })
 
