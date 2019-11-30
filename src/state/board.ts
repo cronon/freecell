@@ -1,6 +1,7 @@
-import {observable, computed, autorun} from 'mobx';
-import {Card, createCard, suits, lt} from './card';
-import {arrangedStack, movableStack} from './column';
+import {observable, computed} from 'mobx';
+import {Card, createCard, suits, lt, Suit} from './card';
+import {movableStack} from './column';
+import { last } from 'lodash';
 
 export class Board {
     @observable
@@ -110,13 +111,30 @@ export class Board {
     }
     moveToFreePlace(card: Card) {
         const freeIndex = this.freeplaces.findIndex(f => f === null);
-        if (freeIndex !== -1) {
-            card.position = {
-                stack: 'freeplace',
-                y: 0,
-                x: freeIndex
+        if (card.position.stack === 'columns') {
+            if (freeIndex !== -1) {
+                card.position = {
+                    stack: 'freeplace',
+                    y: 0,
+                    x: freeIndex
+                }
             }
         }
-
+    }
+    moveToFoundation(suit: Suit) {
+        const selectedCard = this.selectedCard;
+        if (selectedCard && selectedCard.suit === suit) {
+            const topFoundation = last(this.foundation[suit]);
+            const ifMove = topFoundation
+                ? topFoundation.rank + 1 === selectedCard.rank
+                : selectedCard.rank === 1;
+            if (ifMove) {
+                selectedCard.position = {
+                    stack: 'foundation',
+                    y: 0,
+                    x: 0
+                }
+            }
+        }
     }
 }

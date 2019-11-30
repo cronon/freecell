@@ -1,6 +1,6 @@
 import './board.scss';
 import {CardComponent} from './card';
-import { Card, suits } from '../state/card';
+import { Card, suits, Suit } from '../state/card';
 import React from 'react';
 import { game, movableStack } from '../state';
 import {observer} from'mobx-react';
@@ -21,9 +21,7 @@ export const BoardComponent = observer(() => {
         </div>
         <div className="collectedCards">
             {suits.map(suit => (
-                <div key={suit} className="collectedStack">
-                    {board.foundation[suit].map(cardsMap)}
-                </div>
+                <Foundation suit={suit} key={suit} />
             ))}
         </div>
         <div className="columns">
@@ -66,6 +64,14 @@ const Column = observer(({index}: {index: number}) => {
             game.board.selectCard(lastCard);
         }
     }
+});
+const Foundation = observer(({suit}: {suit: Suit}) => {
+    const board = game.board;
+    const cards = board.foundation[suit];
+    const lastCard = last(cards);
+    return <div className="collectedStack" onClick={() => board.moveToFoundation(suit)}>
+        {lastCard && <CardComponent card={lastCard} onSelect={game.board.selectCard} /> }
+    </div>
 })
 const FreePlace = observer(({i}: {i: number}) => {
     const board = game.board;
@@ -79,4 +85,4 @@ const FreePlace = observer(({i}: {i: number}) => {
         return <div className={`free-place ${canPlace}`} onClick={() => board.freePlaceClick(i)}>
         </div>
     }
-})
+});
