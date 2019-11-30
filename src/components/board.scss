@@ -8,6 +8,20 @@
 .column {
     display: flex;
     flex-direction: column;
+    position: relative;
+    flex-basis: 132px;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    .card {
+        position: absolute;
+    }
+    @for $i from 1 to 54 {
+        .card:nth-child(#{$i}) {
+            top: $i*25px;
+            z-index: $i;
+        }
+    }
 }
 .free-places {
     display: inline-flex;

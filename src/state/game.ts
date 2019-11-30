@@ -7,11 +7,10 @@ export class Game {
     @observable
     score: number = 0;
 
-
     constructor(){
         this.board = new Board;
-
     }
 }
 
 export const game = new Game;
+(window as any).GAME = game;

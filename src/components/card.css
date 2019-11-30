@@ -1,18 +1,30 @@
 .card {
     display: flex;
-    width: 130px;
+    width: 120px;
     height: 200px;
     background: white;
     flex-direction: column;
     border: 1px solid black;
+    padding: 5px;
+    user-select: none;
+}
+.card-selected {
+    background: lightblue;
 }
 .card-header {
     height: 25px;
     font-size: 16px;
 }
 .card-center {
-    height: 75px;
+    height: 140px;
     font-size: 28px;
+    margin-top: 50px;
+    text-align: center;
+}
+.card-footer {
+    height: 25px;
+    font-size: 16px;
+    text-align: right;
 }
 .card-black {
     color: black;

@@ -1,19 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './card.css';
 import { Card, Rank, Suit } from '../state/card';
+import { observer } from 'mobx-react';
 
-export const CardComponent = ({card}: {card: Card}) => {
-    return <div className={`card card-${suitToColor(card.suit)}`}>
-        <div className="card-header">
-            <span className={`card-suit`}>{suitToPic(card.suit)}</span>
-            <span className="card-rank">{rankToLetter(card.rank)}</span>
+export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect: (card: Card) => void}) => {
+    const [zIndex, setZIndex] = useState<string>('');
+    const style = zIndex ? {zIndex} : {} as any;
+    const selected = card.selected ? 'card-selected' : '';
+    return <div style={style} className={`card card-${suitToColor(card.suit)} ${selected}`}
+            onMouseDown={onMouseDown} onContextMenu={e => e.preventDefault()}
+            >
+            <div className="card-header">
+                <span className="card-suit">{suitToPic(card.suit)}</span>
+                <span className="card-rank">{rankToLetter(card.rank)}</span>
+            </div>
+            <div className="card-center">
+                <span className="card-suit">{suitToPic(card.suit)}</span>
+                <span className="card-rank">{rankToLetter(card.rank)}</span>
+            </div>
+            <div className="card-footer">
+                <span className="card-suit">{suitToPic(card.suit)}</span>
+                <span className="card-rank">{rankToLetter(card.rank)}</span>
+            </div>
         </div>
-        <div className="card-center">
-            <span className={`card-suit`}>{suitToPic(card.suit)}</span>
-            <span className="card-rank">{rankToLetter(card.rank)}</span>
-        </div>
-    </div>
-}
+    function onMouseDown(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        if (e.button === 2) {
+            e.preventDefault();
+            e.stopPropagation();
+            setZIndex('55');
+            document.body.addEventListener('mouseup', onMouseUp)
+        } else if (e.button === 0) {
+            onSelect(card)
+        }
+    }
+    function onMouseUp(e: MouseEvent) {
+        if (e.button === 2) {
+            setZIndex('');
+            document.body.removeEventListener('mouseup', onMouseUp);
+        }
+    }
+})
+
 function rankToLetter(number: Rank): string {
     if (number < 0) {
         throw new Error('No rank less 0')
