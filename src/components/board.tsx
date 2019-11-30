@@ -59,7 +59,7 @@ const Column = observer(({index}: {index: number}) => {
                 movingCard.position = {
                     stack: 'columns',
                     x: index,
-                    y: (lastCard ? lastCard.position.y + 1 + i : 0)
+                    y: lastCard ? lastCard.position.y + 1 + i : i
                 }
             })
             selectedCard.selected = false;
