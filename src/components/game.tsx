@@ -6,6 +6,6 @@ export const GameComponent = ({game}: {game: Game}) => {
     return <div>
         <div>Here is score</div>
         <div>Warning that there are no more moves</div>
-        <BoardComponent board={game.board} />
+        <BoardComponent />
     </div>
 }

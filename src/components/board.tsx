@@ -1,22 +1,21 @@
 import './board.scss';
-import { Board } from '../state/board';
 import {CardComponent} from './card';
 import { Card, suits } from '../state/card';
 import React from 'react';
 import { game } from '../state';
 import {observer} from'mobx-react';
 
-export const BoardComponent = observer(({board}: {board: Board}) => {
+export const BoardComponent = observer(() => {
     const cardsMap = (c: Card, i: number) => (
-        <CardComponent onSelect={onCardSelect} key={c.id} card={c} />
+        <CardComponent onSelect={board.selectCard} key={c.id} card={c} />
     )
-
+    const board = game.board;
     return <div className="board">
         <div className="free-places">
-            <div className="free-place">{board.freeplaces[0] && <CardComponent onSelect={onCardSelect} card={board.freeplaces[0]} />}</div>
-            <div className="free-place">{board.freeplaces[1] && <CardComponent onSelect={onCardSelect} card={board.freeplaces[1]} />}</div>
-            <div className="free-place">{board.freeplaces[2] && <CardComponent onSelect={onCardSelect} card={board.freeplaces[2]} />}</div>
-            <div className="free-place">{board.freeplaces[3] && <CardComponent onSelect={onCardSelect} card={board.freeplaces[3]} />}</div>
+            <FreePlace key={0} i={0} />
+            <FreePlace key={1} i={1} />
+            <FreePlace key={2} i={2} />
+            <FreePlace key={3} i={3} />
         </div>
         <span>King</span>
         <div className="collectedCards">
@@ -34,7 +33,16 @@ export const BoardComponent = observer(({board}: {board: Board}) => {
             })}
         </div>
     </div>
-    function onCardSelect(card: Card){
-        game.board.selectCard(card);
-    }
 })
+const FreePlace = ({i}: {i: number}) => {
+    const board = game.board;
+    const place = board.freeplaces[i];
+    if (place != null) {
+        return <div className="free-place">
+            <CardComponent onSelect={board.selectCard} card={place} />
+        </div>
+    } else {
+        return <div className="free-place" onClick={() => board.freePlaceClick(i)}>
+        </div>
+    }
+}
