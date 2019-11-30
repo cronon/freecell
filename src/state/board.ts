@@ -87,7 +87,7 @@ export class Board {
             });
         });
         this.selectCard = this.selectCard.bind(this);
-        this.freePlaceClick = this.freePlaceClick.bind(this);
+        this.moveToFreePlace = this.moveToFreePlace.bind(this);
     }
 
     selectCard(card: Card) {
@@ -100,7 +100,7 @@ export class Board {
             card.selected = true;
         }
     }
-    freePlaceClick(i: number) {
+    moveToFreePlace(i: number) {
         if (this.selectedCard && this.freeplaces[i] === null) {
             this.selectedCard.position = {
                 stack: 'freeplace',
@@ -109,27 +109,37 @@ export class Board {
             this.selectedCard.selected = false;
         }
     }
-    moveToFreePlace(card: Card) {
+    tryToMove(card: Card) {
         this.selectedCard && (this.selectedCard.selected = false);
         card.selected = true;
 
         const suitableColumn = this.canPlaceColumns.findIndex(c => !!c);
         const freeIndex = this.freeplaces.findIndex(f => f === null);
         if (suitableColumn !== -1) {
-            card.position = {
-                stack: 'columns',
-                x: suitableColumn,
-                y: this.columns[suitableColumn].length
-            }
-            card.selected = false;
+            this.moveToColumn(suitableColumn);
         } else if (freeIndex !== -1 && card.position.stack === 'columns') {
-            card.position = {
-                stack: 'freeplace',
-                y: 0,
-                x: freeIndex
-            }
-            card.selected = false;
+            this.moveToFreePlace(freeIndex);
         }
+    }
+    moveToColumn(index: number) {
+        const {selectedCard, selectedColumn} = this;
+        if (!selectedCard) return;
+
+        let toMove = [] as Card[];
+        const lastCard = last(this.columns[index]) || null;
+        if (selectedColumn) {
+            toMove = movableStack(selectedColumn, lastCard);
+        } else {
+            toMove = [selectedCard];
+        }
+        toMove.forEach((movingCard, i) => {
+            movingCard.position = {
+                stack: 'columns',
+                x: index,
+                y: lastCard ? lastCard.position.y + 1 + i : i
+            }
+        })
+        selectedCard.selected = false;
     }
     moveToFoundation(suit: Suit) {
         const selectedCard = this.selectedCard;

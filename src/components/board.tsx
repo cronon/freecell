@@ -39,29 +39,14 @@ const Column = observer(({index}: {index: number}) => {
     const canPlaceCls = canPlace ? 'can-place' : '';
     return <div className={`column ${canPlaceCls}`} onClick={onClick}>
         {cardsUnder.map(c => <CardComponent key={c.id} card={c} />)}
-        {!!lastCard && <CardComponent key={lastCard.id} card={lastCard}
-            onSelect={() => game.board.selectCard(lastCard)}
-            onDoubleClick={() => board.moveToFreePlace(lastCard)}/>}
+        {lastCard && <CardComponent key={lastCard.id} card={lastCard}
+            onSelect={() => !canPlace && game.board.selectCard(lastCard)}
+            onDoubleClick={() => board.tryToMove(lastCard)}/>}
     </div>
 
     function onClick() {
         if (canPlace) {
-            const selectedCard = game.board.selectedCard!;
-            const selectedColumn = game.board.selectedColumn;
-            let toMove = [] as Card[];
-            if (selectedColumn) {
-                toMove = movableStack(selectedColumn, lastCard);
-            } else {
-                toMove = [selectedCard];
-            }
-            toMove.forEach((movingCard, i) => {
-                movingCard.position = {
-                    stack: 'columns',
-                    x: index,
-                    y: lastCard ? lastCard.position.y + 1 + i : i
-                }
-            })
-            selectedCard.selected = false;
+            board.moveToColumn(index);
         }
     }
 });
@@ -71,7 +56,7 @@ const Foundation = observer(({suit}: {suit: Suit}) => {
     const lastCard = last(cards);
     return <div className="collectedStack" onClick={() => board.moveToFoundation(suit)}>
         {lastCard && <CardComponent card={lastCard} onSelect={game.board.selectCard}
-            onDoubleClick={() => board.moveToFreePlace(lastCard)}/> }
+            onDoubleClick={() => board.tryToMove(lastCard)}/> }
     </div>
 })
 const FreePlace = observer(({i}: {i: number}) => {
@@ -79,11 +64,11 @@ const FreePlace = observer(({i}: {i: number}) => {
     const card = board.freeplaces[i];
     if (card != null) {
         return <div className="free-place">
-            <CardComponent onDoubleClick={() => board.moveToFreePlace(card)} onSelect={board.selectCard} card={card} />
+            <CardComponent onDoubleClick={() => board.tryToMove(card)} onSelect={board.selectCard} card={card} />
         </div>
     } else {
         const canPlace = !!game.board.selectedCard ? 'can-place' : '';
-        return <div className={`free-place ${canPlace}`} onClick={() => board.freePlaceClick(i)}>
+        return <div className={`free-place ${canPlace}`} onClick={() => board.moveToFreePlace(i)}>
         </div>
     }
 });
