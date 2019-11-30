@@ -66,7 +66,6 @@ export class Board {
                 return !!stack.length;
             }
         });
-        console.log(r);
         return r;
     }
 
@@ -99,7 +98,6 @@ export class Board {
         } else {
             card.selected = true;
         }
-
     }
     freePlaceClick(i: number) {
         if (this.selectedCard && this.freeplaces[i] === null) {
