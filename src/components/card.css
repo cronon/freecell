@@ -7,23 +7,22 @@
     border: 1px solid black;
     padding: 5px;
     user-select: none;
+    justify-content: space-between;
 }
 .card-selected {
     background: lightblue;
 }
 .card-header {
     height: 25px;
-    font-size: 16px;
+    font-size: 18px;
 }
 .card-center {
-    height: 140px;
-    font-size: 28px;
-    margin-top: 50px;
+    font-size: 72px ;
     text-align: center;
 }
 .card-footer {
     height: 25px;
-    font-size: 16px;
+    font-size: 18px;
     text-align: right;
 }
 .card-black {
