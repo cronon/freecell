@@ -23,7 +23,7 @@
 .card-footer {
     height: 25px;
     font-size: 18px;
-    text-align: right;
+    transform: rotate(180deg);
 }
 .card-black {
     color: black;

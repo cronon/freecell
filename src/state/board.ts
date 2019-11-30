@@ -23,7 +23,7 @@ export class Board {
         return Array(8).fill([]).map((_, x) => {
             return this.allCards.filter(c => {
                 return c.position.stack === 'columns' && c.position.x === x
-            })
+            }).sort((c1,c2) => c1.position.y - c2.position.y)
         })
     }
 

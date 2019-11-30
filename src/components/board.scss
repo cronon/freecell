@@ -1,3 +1,6 @@
+.can-place {
+    cursor: pointer;
+}
 .columns {
     display: flex;
     flex-direction: row;
@@ -9,6 +12,7 @@
     flex-basis: 132px;
     flex-grow: 0;
     flex-shrink: 0;
+    margin-right: 1px;
 
     .card {
         position: absolute;

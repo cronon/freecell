@@ -32,15 +32,31 @@ export const BoardComponent = observer(() => {
     </div>
 });
 
-const Column = ({column}: {column: Card[]}) => {
+const Column = observer(({column}: {column: Card[]}) => {
     const cardsUnder = column.slice(0, -1);
-    const lastCard = column[column.length -1 ];
-    return <div className="column">
+    const lastCard = column[column.length-1];
+    const selectedCard = game.board.selectedCard;
+    const canPlace = selectedCard && selectedCard.rank + 1 === lastCard.rank;
+    const canPlaceCls = canPlace ? 'can-place' : '';
+    return <div className={`column ${canPlaceCls}`}>
         {cardsUnder.map(c => <CardComponent key={c.id} card={c} />)}
-        <CardComponent key={lastCard.id} card={lastCard} onSelect={game.board.selectCard} />
+        <CardComponent key={lastCard.id} card={lastCard} onSelect={onSelect} />
     </div>
-}
-const FreePlace = ({i}: {i: number}) => {
+
+    function onSelect(card: Card) {
+        if (canPlace) {
+            game.board.selectedCard!.position = {
+                stack: 'columns',
+                x: card.position.x,
+                y: card.position.y + 1
+            }
+            game.board.selectedCard!.selected = false;
+        } else {
+            game.board.selectCard(card);
+        }
+    }
+})
+const FreePlace = observer(({i}: {i: number}) => {
     const board = game.board;
     const place = board.freeplaces[i];
     if (place != null) {
@@ -48,7 +64,8 @@ const FreePlace = ({i}: {i: number}) => {
             <CardComponent onSelect={board.selectCard} card={place} />
         </div>
     } else {
-        return <div className="free-place" onClick={() => board.freePlaceClick(i)}>
+        const canPlace = !!game.board.selectedCard ? 'can-place' : '';
+        return <div className={`free-place ${canPlace}`} onClick={() => board.freePlaceClick(i)}>
         </div>
     }
-}
+})
