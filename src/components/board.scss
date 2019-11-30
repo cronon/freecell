@@ -7,7 +7,9 @@
 }
 .board {
     width: calc(var(--card-width)*8 + 8px);
-
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 .column {
     display: flex;
