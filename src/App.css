@@ -1,3 +1,7 @@
 body {
-    background: green;
+    background: darkgreen;
+}
+:root {
+    --card-width: 130px;
+    --card-height: 212px;
 }

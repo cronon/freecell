@@ -5,11 +5,15 @@
     display: flex;
     flex-direction: row;
 }
+.board {
+    width: calc(var(--card-width)*8 + 8px);
+
+}
 .column {
     display: flex;
     flex-direction: column;
     position: relative;
-    flex-basis: 132px;
+    flex-basis: var(--card-width);
     flex-grow: 0;
     flex-shrink: 0;
     margin-right: 1px;
@@ -29,8 +33,10 @@
     display: inline-flex;
 }
 .free-place {
-    width: 130px;
-    height: 210px;
+    width: var(--card-width);
+    height: var(--card-height);
+    box-sizing: border-box;
+    margin-right: 1px;
     border: 1px solid black;
 
     .card {
@@ -43,10 +49,12 @@
     display: inline-flex;
 }
 .collectedStack {
-    width: 130px;
-    height: 210px;
+    width: var(--card-width);
+    height: var(--card-height);
+    box-sizing: border-box;
+    margin-right: 1px;
     border: 1px solid black;
-
+    background: forestgreen;
     .card {
         position: relative;
         top: -1px;

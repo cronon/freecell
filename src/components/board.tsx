@@ -19,7 +19,6 @@ export const BoardComponent = observer(() => {
             <FreePlace key={2} i={2} />
             <FreePlace key={3} i={3} />
         </div>
-        <span>King</span>
         <div className="collectedCards">
             {suits.map(suit => (
                 <div key={suit} className="collectedStack">

@@ -1,7 +1,7 @@
 .card {
     display: flex;
-    width: 120px;
-    height: 200px;
+    width: var(--card-width);
+    height: var(--card-height);
     background: white;
     flex-direction: column;
     border: 1px solid black;
@@ -9,6 +9,7 @@
     user-select: none;
     justify-content: space-between;
     border-radius: 7px;
+    box-sizing: border-box;
 }
 .card-selected {
     background: lightblue;
