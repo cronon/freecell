@@ -4,6 +4,8 @@ import {movableStack} from './column';
 import { last } from 'lodash';
 
 export class Board {
+    turns: Card[][] = [];
+
     @observable
     setNumber: number;
     @observable
@@ -77,7 +79,7 @@ export class Board {
                 const card = observable(createCard({
                     suit,
                     rank: rank+1,
-                    position: observable({
+                    position: ({
                         stack: 'columns',
                         x: this.allCards.length % 8,
                         y: this.allCards.length / 8 |0
@@ -87,10 +89,22 @@ export class Board {
                 // intercept(card, function(change){ console.log(change); return change })
             });
         });
+        this.commitState();
         this.selectCard = this.selectCard.bind(this);
         this.moveToFreePlace = this.moveToFreePlace.bind(this);
     }
-
+    commitState(){
+        this.turns.push(this.allCards.map((card: any) => ({
+            ...card,
+            position: {...card.position}
+        })));
+    }
+    rollback(){
+        if (this.turns.length) {
+            const lastTurn = this.turns.pop();
+            this.allCards = lastTurn as any;
+        }
+    }
     selectCard(card: Card) {
         if (this.selectedCard === card) {
             card.selected = false;
@@ -108,6 +122,7 @@ export class Board {
                 x: i, y: 0
             }
             this.selectedCard.selected = false;
+            this.commitState();
         }
     }
     tryToMove(card: Card) {
@@ -141,10 +156,11 @@ export class Board {
             }
         })
         selectedCard.selected = false;
+        this.commitState();
     }
     moveToFoundation(suit: Suit) {
         const selectedCard = this.selectedCard;
-        if (selectedCard && selectedCard.suit === suit) {
+        if (selectedCard && selectedCard.suit === suit && selectedCard.position.stack !== 'foundation') {
             const topFoundation = last(this.foundation[suit]);
             const ifMove = topFoundation
                 ? topFoundation.rank + 1 === selectedCard.rank
@@ -155,7 +171,9 @@ export class Board {
                     y: 0,
                     x: 0
                 }
+                this.commitState();
             }
+            selectedCard.selected = false;
         }
     }
 }
