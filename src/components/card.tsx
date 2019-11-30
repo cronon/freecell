@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './card.css';
-import { Card, Rank, Suit } from '../state/card';
+import { Card, Rank, Suit, suitToColor } from '../state/card';
 import { observer } from 'mobx-react';
 
 export const CardComponent = observer(({card, onSelect}: {card: Card, onSelect?: (card: Card) => void}) => {
@@ -65,12 +65,4 @@ function suitToPic(suit: Suit): string {
         default: throw new Error('Unrecognized suit')
     }
 }
-function suitToColor(suit: Suit): string {
-    switch(suit) {
-        case 'diamonds':
-        case 'hearts': return 'red';
-        case 'spades':
-        case 'clubs': return 'black';
-        default: throw new Error('Unrecognized suit')
-    }
-}
+

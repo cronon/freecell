@@ -1,5 +1,6 @@
-import {Card, createCard, suits} from './card';
-import {observable, computed} from 'mobx';
+import {observable, computed, autorun} from 'mobx';
+import {Card, createCard, suits, lt} from './card';
+import {arrangedStack, movableStack} from './column';
 
 export class Board {
     @observable
@@ -41,9 +42,36 @@ export class Board {
     get selectedCard() {
         return this.allCards.find(c => c.selected) || null;
     }
+
+    @computed
+    get selectedColumn() {
+        return this.selectedCard &&
+            this.selectedCard.position.stack === 'columns' &&
+            this.columns[this.selectedCard.position.x]
+            || [];
+    }
+    @computed
+    get canPlaceColumns() {
+        const selectedCard = this.selectedCard;
+        const r = this.columns.map((col, i) => {
+            if (selectedCard == null) return false;
+            if (col.length === 0) return true; // TODO add calculation of free spaces
+
+            const lastCard = col[col.length-1];
+            if (selectedCard.position.stack === 'freeplace' || selectedCard.position.stack === 'foundation') {
+                return lt(selectedCard, lastCard);
+            } else {
+                const selectedColumn = this.selectedColumn;
+                const stack = movableStack(selectedColumn, lastCard);
+                return !!stack.length;
+            }
+        });
+        console.log(r);
+        return r;
+    }
+
     constructor() {
         this.setNumber = Math.floor(Math.random() * 32000);
-
         ['spades', 'hearts', 'clubs', 'diamonds'].forEach((suit) => {
             Array(13).fill({}).forEach((_, rank) => {
                 const card = observable(createCard({
