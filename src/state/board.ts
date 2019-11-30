@@ -71,10 +71,24 @@ export class Board {
         });
         return r;
     }
+    @computed
+    get canPlaceFoundation(): {[i: string]: Card[]} {
+        const selectedCard = this.selectedCard;
+        return suits.reduce((suits, suit) => {
+            suits[suit] = false;
+            if (selectedCard && selectedCard.suit === suit) {
+                const lastCard = last(this.foundation[suit]);
+                suits[suit] = lastCard
+                    ? lastCard.rank + 1 === selectedCard.rank
+                    : selectedCard.rank === 1;
+            }
+            return suits;
+        }, {} as any)
+    }
 
     constructor() {
         this.setNumber = Math.floor(Math.random() * 32000);
-        ['spades', 'hearts', 'clubs', 'diamonds'].forEach((suit) => {
+        suits.forEach((suit) => {
             Array(13).fill({}).forEach((_, rank) => {
                 const card = observable(createCard({
                     suit,
@@ -133,8 +147,10 @@ export class Board {
         const freeIndex = this.freeplaces.findIndex(f => f === null);
         if (suitableColumn !== -1) {
             this.moveToColumn(suitableColumn);
-        } else if (freeIndex !== -1 && card.position.stack === 'columns') {
+        } else if (freeIndex !== -1 && card.position.stack !== 'freeplace') {
             this.moveToFreePlace(freeIndex);
+        } else if (this.canPlaceFoundation[card.suit]) {
+            this.moveToFoundation(card.suit);
         }
     }
     moveToColumn(index: number) {
@@ -161,19 +177,15 @@ export class Board {
     moveToFoundation(suit: Suit) {
         const selectedCard = this.selectedCard;
         if (selectedCard && selectedCard.suit === suit && selectedCard.position.stack !== 'foundation') {
-            const topFoundation = last(this.foundation[suit]);
-            const ifMove = topFoundation
-                ? topFoundation.rank + 1 === selectedCard.rank
-                : selectedCard.rank === 1;
-            if (ifMove) {
+            if (this.canPlaceFoundation[suit]) {
                 selectedCard.position = {
                     stack: 'foundation',
                     y: 0,
                     x: 0
                 }
+                selectedCard.selected = false;
                 this.commitState();
             }
-            selectedCard.selected = false;
         }
     }
 }

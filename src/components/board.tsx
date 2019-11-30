@@ -48,9 +48,11 @@ const Foundation = observer(({suit}: {suit: Suit}) => {
     const board = game.board;
     const cards = board.foundation[suit];
     const lastCard = last(cards);
-    return <div className="foundation" onClick={() => board.moveToFoundation(suit)}>
+    const canPlace = !!game.board.canPlaceFoundation[suit];
+    const canPlaceCls = canPlace ? 'can-place' : '';
+    return <div className={`foundation ${canPlaceCls}`} onClick={() => board.moveToFoundation(suit)}>
         {lastCard
-            ? <CardComponent card={lastCard} onSelect={game.board.selectCard}
+            ? <CardComponent card={lastCard} onSelect={() => !canPlace && game.board.selectCard(lastCard)}
                 onDoubleClick={() => board.tryToMove(lastCard)}/>
             : <div className={`foundation-empty foundation-empty-${suitToColor(suit)}`}>
                 {suitToPic(suit)}
