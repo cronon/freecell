@@ -110,28 +110,25 @@ export class Board {
         }
     }
     moveToFreePlace(card: Card) {
-        const freeIndex = this.freeplaces.findIndex(f => f === null);
         this.selectedCard && (this.selectedCard.selected = false);
         card.selected = true;
-        if (card.position.stack === 'columns') {
-            if (freeIndex !== -1) {
-                card.position = {
-                    stack: 'freeplace',
-                    y: 0,
-                    x: freeIndex
-                }
+
+        const suitableColumn = this.canPlaceColumns.findIndex(c => !!c);
+        const freeIndex = this.freeplaces.findIndex(f => f === null);
+        if (suitableColumn !== -1) {
+            card.position = {
+                stack: 'columns',
+                x: suitableColumn,
+                y: this.columns[suitableColumn].length
             }
             card.selected = false;
-        } else if (card.position.stack === 'freeplace') {
-            const suitableColumn = this.canPlaceColumns.findIndex(c => !!c);
-            if (suitableColumn !== -1) {
-                card.position = {
-                    stack: 'columns',
-                    x: suitableColumn,
-                    y: this.columns[suitableColumn].length
-                }
-                card.selected = false;
+        } else if (freeIndex !== -1 && card.position.stack === 'columns') {
+            card.position = {
+                stack: 'freeplace',
+                y: 0,
+                x: freeIndex
             }
+            card.selected = false;
         }
     }
     moveToFoundation(suit: Suit) {
