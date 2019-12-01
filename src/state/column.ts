@@ -50,14 +50,15 @@ export function generateDeck(seed: number): Card[] {
     let i: number;
     let l: number;
     while(array.length) {
-        i = rnd.rand() % array.length;
-        l = array.length-1;
-        [array[i], array[l]] = [array[l], array[i]];
+        if (seed !== -1) {
+            i = rnd.rand() % array.length;
+            l = array.length-1;
+            [array[i], array[l]] = [array[l], array[i]];
+        }
         const newCard = array.pop() as Card;
         newCard.position.x = cards.length % 8;
         newCard.position.y = cards.length / 8 |0;
         cards.push(newCard)
     }
-    console.log(cards.map(c => c.id))
     return cards;
 }

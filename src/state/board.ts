@@ -91,7 +91,6 @@ export class Board {
             return observable(c)
         });
         this.commitState();
-        this.finishMove();
         this.selectCard = this.selectCard.bind(this);
         this.moveToFreePlace = this.moveToFreePlace.bind(this);
     }
