@@ -1,15 +1,19 @@
 import React, { useEffect } from 'react';
 import {BoardComponent} from './board';
 import { Game } from '../state/game';
+import { autorun } from 'mobx';
 
 export const GameComponent = ({game}: {game: Game}) => {
     useEffect(() => {
-        document.addEventListener('keydown', ctrlZ)
-        return () => document.removeEventListener('keydown', ctrlZ)
+        document.addEventListener('keydown', ctrlZ);
+        return () => document.removeEventListener('keydown', ctrlZ);
+    });
+    useEffect(() => {
+        return autorun(() => {
+            document.title = 'Freecell - Game #'+game.seed;
+        });
     })
     return <div>
-        <div>Here is score</div>
-        <div>Warning that there are no more moves</div>
         <BoardComponent />
     </div>
 
@@ -19,3 +23,4 @@ export const GameComponent = ({game}: {game: Game}) => {
         }
     }
 }
+

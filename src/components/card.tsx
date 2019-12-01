@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './card.css';
-import { Card, Rank, Suit, suitToColor, suitToPic } from '../state/card';
+import { Card, Rank, rankToLetter, suitToColor, suitToPic } from '../state/card';
 import { observer } from 'mobx-react';
 import {game} from '../state';
 
@@ -46,20 +46,5 @@ export const CardComponent = observer(({card, onSelect, onDoubleClick}: CardComp
     }
 })
 
-function rankToLetter(number: Rank): string {
-    if (number < 0) {
-        throw new Error('No rank less 0')
-    } else if (number === 0) {
-        return '';
-    } else if (number > 13) {
-        throw new Error('No rank gt 13');
-    } else {
-        return [
-            'A',
-            '2','3','4','5','6','7','8','9','10',
-            'J', 'Q', 'K'
-        ][number - 1]
-    }
-}
 
 

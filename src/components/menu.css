@@ -1,0 +1,22 @@
+.header {
+    width: var(--global-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+    font-size: 20px;
+}
+.header button {
+    font-size: 20px;
+}
+
+.heading {
+    margin: 0 auto;
+    width: fit-content;
+}
+.seed-input {
+    width: 4em;
+}
+.seed-label {
+    margin-left: 1em;
+}
