@@ -2,6 +2,7 @@ import {observable, computed, intercept} from 'mobx';
 import {Card, createCard, suits, lt, Suit} from './card';
 import {Foundation, canPlaceFoundation, canAutoMoveFoundation} from './foundation';
 import {movableStack} from './column';
+import {stateToStr} from '../utils';
 import { last } from 'lodash';
 
 export class Board {
@@ -101,19 +102,19 @@ export class Board {
                 // intercept(card, function(change){ console.log(change); return change })
             });
         });
+        this.commitState();
         this.finishMove();
         this.selectCard = this.selectCard.bind(this);
         this.moveToFreePlace = this.moveToFreePlace.bind(this);
     }
     finishMove(){
-        this.commitState();
         const autoMoveCards = this.columns.map(col => last(col))
             .concat(...this.freeplaces as any)
             .filter(c => !!c)
             .filter((c: any) => canAutoMoveFoundation(c, this.foundation)) as Card[];
-        console.log(autoMoveCards);
         if (autoMoveCards.length) {
             setTimeout(() => {
+                this.commitState();
                 autoMoveCards.forEach(c => this._moveToFoundation(c));
                 this.finishMove();
             }, 300)
@@ -124,11 +125,13 @@ export class Board {
             ...card,
             position: {...card.position}
         })));
+        console.log('committed', this.turns.length, stateToStr(this.allCards))
     }
     rollback(){
         if (this.turns.length) {
             const lastTurn = this.turns.pop();
             this.allCards = lastTurn as any;
+            console.log('rolledback', this.turns.length+1, stateToStr(this.allCards))
         }
     }
     selectCard(card: Card) {
@@ -143,6 +146,7 @@ export class Board {
     }
     moveToFreePlace(i: number) {
         if (this.selectedCard && this.freeplaces[i] === null) {
+            this.commitState();
             this.selectedCard.position = {
                 stack: 'freeplace',
                 x: i, y: 0
@@ -176,6 +180,7 @@ export class Board {
         } else {
             toMove = [selectedCard];
         }
+        this.commitState();
         toMove.forEach((movingCard, i) => {
             movingCard.position = {
                 stack: 'columns',
@@ -198,6 +203,7 @@ export class Board {
     moveToFoundation(suit: Suit) {
         const selectedCard = this.selectedCard;
         if (selectedCard && selectedCard.suit === suit && selectedCard.position.stack !== 'foundation') {
+            this.commitState();
             this._moveToFoundation(selectedCard);
             selectedCard.selected = false;
             this.finishMove();
