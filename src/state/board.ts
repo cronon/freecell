@@ -37,6 +37,7 @@ export class Board {
             cards[suit] = this.allCards.filter(c => {
                 return c.position.stack === 'foundation' && c.suit === suit;
             }) as Card[];
+            cards[suit].sort((c1: any, c2: any) => c1.rank - c2.rank);
             return cards;
         }, {})
     }
@@ -182,7 +183,7 @@ export class Board {
         if (canPlaceFoundation(card, this.foundation)) {
             card.position = {
                 stack: 'foundation',
-                y: 0,
+                y: this.foundation[card.suit].length,
                 x: 0
             }
         }

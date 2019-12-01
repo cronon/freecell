@@ -8,7 +8,7 @@ export class Game {
     score: number = 0;
     seed = 1;
     constructor(){
-        this.seed = Math.random()*32000 |0;
+        this.seed = 17868 //Math.random()*32000 |0;
         this.board = new Board(this.seed);
     }
 }

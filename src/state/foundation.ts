@@ -14,8 +14,9 @@ export function canAutoMoveFoundation(card: Card, foundation: Foundation): boole
     if (card.rank === 1) {
         return foundation[card.suit].length === 0;
     } else {
+        const canPlace = canPlaceFoundation(card, foundation);
         const flat = [...foundation.clubs, ...foundation.diamonds, ...foundation.hearts, ...foundation.spades];
-        return flat.filter(cardInFoundation => {
+        return canPlace && flat.filter(cardInFoundation => {
             return lt(cardInFoundation, card)
         }).length === 2;
         // A black 2 can be auto moved when two red aces are there
