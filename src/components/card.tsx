@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import './card.css';
-import { Card, Rank, rankToLetter, suitToColor, suitToPic } from '../state/card';
+import { Card, rankToLetter, suitToColor, suitToPic } from '../state/card';
 import { observer } from 'mobx-react';
-import {game} from '../state';
 
 export interface CardComponentProps {
     card: Card;

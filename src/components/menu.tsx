@@ -26,7 +26,7 @@ export const Menu = observer(() => {
 
     function onNewGame(e: React.FormEvent) {
         e.preventDefault();
-        const value = input && input.current && input.current.value || '0';
+        const value = input && input.current ? input.current.value : '0';
         game.newGame(Number(value))
     }
 })

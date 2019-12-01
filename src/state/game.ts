@@ -21,5 +21,5 @@ export class Game {
     }
 }
 
-export const game = new Game;
+export const game = new Game();
 (window as any).GAME = game;

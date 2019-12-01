@@ -1,5 +1,5 @@
-import {observable, computed, intercept} from 'mobx';
-import {Card, createCard, suits, lt, Suit} from './card';
+import {observable, computed} from 'mobx';
+import {Card, suits, lt, Suit} from './card';
 import {Foundation, canPlaceFoundation, canAutoMoveFoundation} from './foundation';
 import {movableStack, generateDeck} from './column';
 import {stateToStr} from '../utils';
@@ -50,9 +50,9 @@ export class Board {
     @computed
     get selectedColumn() {
         return this.selectedCard &&
-            this.selectedCard.position.stack === 'columns' &&
-            this.columns[this.selectedCard.position.x]
-            || null;
+            this.selectedCard.position.stack === 'columns'
+            ? this.columns[this.selectedCard.position.x]
+            : null;
     }
     @computed
     get canPlaceColumns() {
@@ -112,13 +112,13 @@ export class Board {
             ...card,
             position: {...card.position}
         })));
-        console.log('committed', this.turns.length, stateToStr(this.allCards))
+        // console.log('committed', this.turns.length, stateToStr(this.allCards))
     }
     rollback(){
         if (this.turns.length) {
             const lastTurn = this.turns.pop();
             this.allCards = lastTurn as any;
-            console.log('rolledback', this.turns.length+1, stateToStr(this.allCards))
+            // console.log('rolledback', this.turns.length+1, stateToStr(this.allCards))
         }
     }
     selectCard(card: Card) {

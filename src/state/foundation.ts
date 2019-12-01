@@ -1,4 +1,4 @@
-import {Suit, Card, suitToColor, lt} from './card';
+import {Suit, Card, lt} from './card';
 import { last } from 'lodash';
 export type Foundation = {
     [s in Suit]: Card[];

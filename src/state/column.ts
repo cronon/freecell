@@ -24,7 +24,7 @@ export function movableStack(column: Card[], overCard: Card | null): Card[] {
         return bigStack;
     } else {
         const biggestMovableIndex = bigStack.findIndex(c => lt(c, overCard));
-        if (biggestMovableIndex == -1) return [];
+        if (biggestMovableIndex === -1) return [];
         return bigStack.slice(biggestMovableIndex);
     }
 
