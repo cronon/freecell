@@ -38,8 +38,10 @@
       "last 1 safari version"
     ]
   },
+  "homepage": "https://cronon.github.io/freecell",
   "devDependencies": {
     "@types/lodash": "^4.14.149",
+    "gh-pages": "^2.1.1",
     "node-sass": "^4.13.0"
   }
 }
