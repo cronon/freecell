@@ -5,3 +5,4 @@
 * Ask for seed
 * New game
 * add possibility to not automove cards moved back
+* Detect lose

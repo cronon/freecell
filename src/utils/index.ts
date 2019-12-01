@@ -13,3 +13,5 @@ export function logStateShort(cards: Card[]) {
     const ids = stateToStr(cards);
     console.log(ids)
 }
+
+export * from './msrand';

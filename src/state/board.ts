@@ -1,15 +1,13 @@
 import {observable, computed, intercept} from 'mobx';
 import {Card, createCard, suits, lt, Suit} from './card';
 import {Foundation, canPlaceFoundation, canAutoMoveFoundation} from './foundation';
-import {movableStack} from './column';
+import {movableStack, generateDeck} from './column';
 import {stateToStr} from '../utils';
 import { last } from 'lodash';
 
 export class Board {
     turns: Card[][] = [];
 
-    @observable
-    setNumber: number;
     @observable
     allCards: Card[] = [];
 
@@ -85,22 +83,11 @@ export class Board {
         }, {} as any)
     }
 
-    constructor() {
-        this.setNumber = Math.floor(Math.random() * 32000);
-        suits.forEach((suit) => {
-            Array(13).fill({}).forEach((_, rank) => {
-                const card = observable(createCard({
-                    suit,
-                    rank: rank+1,
-                    position: ({
-                        stack: 'columns',
-                        x: this.allCards.length % 8,
-                        y: this.allCards.length / 8 |0
-                    })
-                }));
-                this.allCards.push(card);
-                // intercept(card, function(change){ console.log(change); return change })
-            });
+    constructor(private seed: number) {
+        const planCards = generateDeck(this.seed);
+        this.allCards = planCards.map(c => {
+            // intercept(card, function(change){ console.log(change); return change })
+            return observable(c)
         });
         this.commitState();
         this.finishMove();

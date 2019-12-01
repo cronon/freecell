@@ -25,7 +25,7 @@ export function createCard({suit, rank, position}: {suit: string, rank: number, 
     }
     return {
         suit, rank,
-        id: suit+rank,
+        id: rankToLetter(rank) + suit[0].toUpperCase(),
         selected: false,
         position
     } as any;
@@ -54,5 +54,21 @@ export function suitToPic(suit: Suit): string {
         case 'hearts': return '♥';
         case 'spades': return '♠';
         default: throw new Error('Unrecognized suit')
+    }
+}
+
+export function rankToLetter(number: number): string {
+    if (number < 0) {
+        throw new Error('No rank less 0')
+    } else if (number === 0) {
+        return '';
+    } else if (number > 13) {
+        throw new Error('No rank gt 13');
+    } else {
+        return [
+            'A',
+            '2','3','4','5','6','7','8','9','10',
+            'J', 'Q', 'K'
+        ][number - 1]
     }
 }

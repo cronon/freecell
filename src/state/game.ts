@@ -6,9 +6,10 @@ export class Game {
     board: Board;
     @observable
     score: number = 0;
-
+    seed = 1;
     constructor(){
-        this.board = new Board;
+        this.seed = Math.random()*32000 |0;
+        this.board = new Board(this.seed);
     }
 }
 
