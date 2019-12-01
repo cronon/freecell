@@ -7,3 +7,5 @@
 * fix: Move single card to a column from freeplace on double click
 * fix: dblclick move card to foundation when they can be automoved
 * fix: responsive view
+
+git subtree push --prefix build origin gh-pages
